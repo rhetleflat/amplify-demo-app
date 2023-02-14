@@ -2,40 +2,7 @@
 # all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
 input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
 
-type Arrangement @model @auth(rules: [ { allow: public } ] ){
-  id: ID!
-  emne: String!
-  startTid: AWSDateTime!
-  sluttTid: AWSDateTime!
-  innhold: String!
-  utsendtDato: AWSDateTime
-  purringer: [Purring]
-  paakrevd: [Gruppe]!
-  ikkePaakrevd [Gruppe]!
-  formsUrl: AWSURL
-  sted: Sted
-  status: Status
-}
-
-type Purring {
-  id: ID!
-  arrangement: Arrangement
-  purreDato: AWSDateTime
-  purreListe: [Person]
-}
-
-type Gruppe {
-  id: ID!
-  personer: [Person]!
-}
-
-type Person {
-  id: ID!
-  navn: String!
-  epost: AWSEmail
-}
-
-type Sted {
+type Sted @model @auth(rules: [ { allow: public } ] ){
   id: ID!
   sted: String!
   adresse: String!
@@ -43,7 +10,40 @@ type Sted {
   poststed: String!
 }
 
-type Status {
+type Arrangement @model @auth(rules: [ { allow: public } ] ){
   id: ID!
-  status: String!
+  emne: String!
+  startTid: AWSDateTime!
+  sluttTid: AWSDateTime!
+  innhold: String!
+  utsendtDato: AWSDateTime
+  purringer: [Purring] @hasMany
+  paakrevd: [Gruppe] @hasMany
+  ikkePaakrevd: [Gruppe] @hasMany
+  formsUrl: AWSURL
+  sted: Sted @hasOne
+  status: Status @hasOne
 }
+
+type Status @model @auth(rules: [ { allow: public } ] ){
+  id: ID!
+  status: String!  
+}
+
+type Purring @model @auth(rules: [ { allow: public } ] ){
+  id: ID!
+  purreDato: AWSDateTime  
+}
+
+type Gruppe @model @auth(rules: [ { allow: public } ] ){
+  id: ID!
+  personer: [Person]! @hasMany
+}
+
+type Person @model @auth(rules: [ { allow: public } ] ){
+  id: ID!
+  navn: String!
+  epost: AWSEmail
+}
+
+
